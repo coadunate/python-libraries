@@ -1,26 +1,28 @@
 # fast5_event_api
 
-# Introduction
+## Introduction
 
 This library provides functionalities for the Events in the fast5 file.
 
 
-# Usage
+## Usage
 
 In order to use this library, all you have to do is import it in your current python file:
 
 `from fast5_event import Fast5Event`
 
-# Features
+## Features
 
 - __**get_event_time_data(event_start, event_end)**__
 
   **Synopsis:** Returns a list contianing the start times for the range of events given in the arguments
   
+  ----------------------------------
   
 - __**get_event_signal_data(event_start, event_end)**__
+
   **Synopsis:** Returns a list containing the mean signal values for the range of events given in arguments
   
   
-# Changelog
+## Changelog
 - (4/7/2017) Create fast5_event_api library
