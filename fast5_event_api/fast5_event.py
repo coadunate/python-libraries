@@ -125,6 +125,55 @@ class Fast5Event(object):
         
         return start_index
         
+        
+
+    def get_model_state_index(self):
+        """ Returns an integer value representing the index of the model state
+            of the given fast5 file. 
+        """
+        self.assert_events() # Throw an error if the event data isn't populated.
+        
+        # The field header array containing names of each offest of pore model
+        field_header_arr = self.events.dtype.names
+        
+        # Getting the index of model_state value
+        model_index = -1
+        for index,field in enumerate(field_header_arr):
+            if field == "model_state":
+                model_index = index
+        return model_index
+        
+        
+    def get_bp_from_events(self,event_start,event_end):
+        """ Returns a list of characters representing base pairs of the range of 
+            events provided in the arguments.
+        """
+        self.assert_events() # Throw an error if the event data isn't populated.
+        
+        bp = [] # empty list that will contain chracters representing basepairs.
+        
+        model_index = self.get_model_state_index()
+        
+        # initially write every nucleutide in the kmer for the first event.
+        initial_kmer = "".join( [ chr(item) for item in self.events[event_start][model_index] ] )
+        for n in initial_kmer:
+            bp.append(n)
+        
+        last_model_state = self.events[event_start][model_index] # represents the visited model_state
+
+        for i in range(event_start+1,event_end):
+            current_model_state = self.events[i][model_index] # represents the current model_state we are looking at
+            if current_model_state != last_model_state: # basecall has happened
+                
+                # add the last digit of the kmer to the bp
+                kmer = "".join( [ chr(item) for item in self.events[i][model_index] ] )
+                bp.append(kmer[-1:]) 
+            else:
+               continue
+            
+            # Update the last model_state
+            last_model_state = self.events[i][model_index]
+        return bp
     
     def get_mean_signal_index(self):
         """ Returns an integer value representing the offset of the mean signal
