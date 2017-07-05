@@ -23,6 +23,13 @@ In order to use this library, all you have to do is import it in your current py
 
   **Synopsis:** Returns a list containing the mean signal values for the range of events given in arguments
   
+   ----------------------------------
+  
+- __**get_bp_from_events(event_start, event_end)**__
+
+  **Synopsis:** Returns a list of characters representing the base pairs of a given range of events in arguments. 
+  
   
 ## Changelog
 - (4/7/2017) Create fast5_event_api library
+- (5/7/2017) Add the function get_bp_from_events to fast5_event_api library
