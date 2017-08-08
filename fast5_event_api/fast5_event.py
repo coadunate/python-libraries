@@ -132,13 +132,40 @@ class Fast5Event(object):
         if not bp:
             raise IOError("The list of basepairs provided is not compatible.")
 
-        eventNumbers = [] # Create an empty list to store event numbers
+        print("DEBUG: bp=" ,bp)
 
-        
+        model_index = self.get_model_state_index()
+        print("DEBUG: model_index=",model_index)
 
+        bp_upperbound = len(bp) - 5
+        print("DEBUG: bp_upperbound=",bp_upperbound)
+        retEventNumbers = [] # empty list that will contain the event numbers
+        event_start = 0
+        matches_so_far = 0
+        for i in range(0,bp_upperbound+1): # loop through the base pairs
+            if matches_so_far >= 2:
+                break;
+            while(event_start < len(self.events)):
+                strbp = ''.join(bp[i:i+5])
+                strevent = "".join( [ chr(item) for item in self.events[event_start][model_index] ])
+                if(strbp == strevent):
+                    retEventNumbers.append(event_start)
+                    event_start = event_start + 1
+                    matches_so_far = matches_so_far + 1
+                    break
+                event_start = event_start + 1
 
+        if matches_so_far >= 2:
+            while(event_start < len(self.events)):
 
-
+                strbp = ''.join(bp[-5:])
+                strevent = ''.join( [ chr(item) for item in self.events[event_start][model_index] ])
+                if(strbp == strevent):
+                    retEventNumbers.append(event_start)
+                    break
+                else:
+                    event_start = event_start + 1
+        return retEventNumbers
 
 
     def get_start_time_index(self):
