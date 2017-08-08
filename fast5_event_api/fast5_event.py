@@ -132,13 +132,10 @@ class Fast5Event(object):
         if not bp:
             raise IOError("The list of basepairs provided is not compatible.")
 
-        print("DEBUG: bp=" ,bp)
 
         model_index = self.get_model_state_index()
-        print("DEBUG: model_index=",model_index)
 
         bp_upperbound = len(bp) - 5
-        print("DEBUG: bp_upperbound=",bp_upperbound)
         retEventNumbers = [] # empty list that will contain the event numbers
         event_start = 0
         matches_so_far = 0
