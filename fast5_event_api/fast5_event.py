@@ -75,6 +75,54 @@ class Fast5Event(object):
         if self.events == None:
             raise IOError("The Event data isn't populated yet")
 
+    def get_event_count(self):
+        """ Returns an integer value representing the number of events
+            that are present in the given fast5 file.
+        """
+        self.assert_events() # Throw an erorr if the event data isn't populated.
+
+        return len(self.events);
+
+    def get_csv_event_data(self,event_start = -1, event_end = -1):
+
+        signal_index = self.get_mean_signal_index()
+        time_index = self.get_start_time_index()
+        model_index = self.get_model_state_index()
+        length_index = self.get_length_index()
+        stdv_index = self.get_stdv_index()
+
+        if event_start is -1 and event_end is -1:
+            # get all the events of a given fast5 file
+            print("index,signal,time,model,length,stdv")
+            for i in range(0,self.get_event_count()):
+                print(
+                    i+1, # serial number
+                    self.events[i][signal_index], # signal
+                    self.events[i][time_index], # time
+                    "".join( [ chr(item) for item in self.events[event_start][model_index] ]), # model
+                    self.events[i][length_index], # length
+                    self.events[i][stdv_index], # stdv
+                    sep=",")
+
+        elif event_end <= event_start:
+            raise IOError("The start event should be less than end and there \
+            should at least be one event")
+        else:
+            # get only events from start to end
+            print("index,signal,time,model,length,stdv")
+            for i in range(event_start,event_end):
+                print(
+                    i+1, # serial number
+                    self.events[i][signal_index], # signal
+                    self.events[i][time_index], # time
+                    "".join( [ chr(item) for item in self.events[event_start][model_index] ]), # model
+                    self.events[i][length_index], # length
+                    self.events[i][stdv_index], # stdv
+                    sep=",")
+
+
+
+
 
     def get_event_time_data(self,event_start,event_end):
         """ Returns a list containing the event time values of the events from
@@ -199,6 +247,38 @@ class Fast5Event(object):
             if field == "model_state":
                 model_index = index
         return model_index
+
+    def get_stdv_index(self):
+        """ Returns an integer value representing the index of the stdv
+            of the given fast5 file.
+        """
+        self.assert_events() # Throw an error if the event data isn't populated.
+
+        # The field header array containing names of each offest of pore model
+        field_header_arr = self.events.dtype.names
+
+        # Getting the index of stdv value
+        stdv_index = -1
+        for index,field in enumerate(field_header_arr):
+            if field == "stdv":
+                stdv_index = index
+        return stdv_index
+
+    def get_length_index(self):
+        """ Returns an integer value representing the index of the length
+            of the given fast5 file.
+        """
+        self.assert_events() # Throw an error if the event data isn't populated.
+
+        # The field header array containing names of each offest of pore model
+        field_header_arr = self.events.dtype.names
+
+        # Getting the index of length value
+        length_index = -1
+        for index,field in enumerate(field_header_arr):
+            if field == "length":
+                length_index = index
+        return length_index
 
 
     def get_bp_from_events(self,event_start,event_end):
