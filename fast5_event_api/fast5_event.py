@@ -83,6 +83,72 @@ class Fast5Event(object):
 
         return len(self.events);
 
+    def get_json_event_data(self,event_start = -1, event_end = -1):
+
+        signal_index = self.get_mean_signal_index()
+        time_index = self.get_start_time_index()
+        model_index = self.get_model_state_index()
+        length_index = self.get_length_index()
+        stdv_index = self.get_stdv_index()
+
+        if event_start is -1 and event_end is -1:
+            # get all the events of a given fast5 file
+            #print("index,signal,time,model,length,stdv")
+            for i in range(0,self.get_event_count()):
+                if(i == (self.get_event_count()-1)):
+                    print(
+                        "{\n" +
+                        "\t\"index\": " + str(i+1) + ",\n" +
+                        "\t\"signal\": " + str(self.events[i][signal_index]) + ",\n" +
+                        "\t\"time\": " + str(self.events[i][time_index]) + ",\n" +
+                        "\t\"model\": \"" + "".join( [ chr(item) for item in self.events[event_start][model_index] ]) + "\"" + ",\n" +
+                        "\t\"length\": " + str(self.events[i][length_index]) + ",\n" +
+                        "\t\"stdv\": " + str(self.events[i][stdv_index]) + "\n" +
+                        "\n}"
+                    )
+                else:
+                    print(
+                        "{\n" +
+                        "\t\"index\": " + str(i+1) + ",\n" +
+                        "\t\"signal\": " + str(self.events[i][signal_index]) + ",\n" +
+                        "\t\"time\": " + str(self.events[i][time_index]) + ",\n" +
+                        "\t\"model\": \"" + "".join( [ chr(item) for item in self.events[event_start][model_index] ]) + "\"" + ",\n" +
+                        "\t\"length\": " + str(self.events[i][length_index]) + ",\n" +
+                        "\t\"stdv\": " + str(self.events[i][stdv_index]) + "\n" +
+                        "\n},"
+                    )
+
+        elif event_end <= event_start:
+            raise IOError("The start event should be less than end and there \
+            should at least be one event")
+        else:
+            # get only events from start to end
+            # print("index,signal,time,model,length,stdv")
+            for i in range(event_start,event_end):
+
+                if(i == (event_end-1)):
+                    print(
+                        "{\n" +
+                        "\t\"index\": " + str(i+1) + ",\n" +
+                        "\t\"signal\": " + str(self.events[i][signal_index]) + ",\n" +
+                        "\t\"time\": " + str(self.events[i][time_index]) + ",\n" +
+                        "\t\"model\": \"" + "".join( [ chr(item) for item in self.events[event_start][model_index] ]) + "\"" + ",\n" +
+                        "\t\"length\": " + str(self.events[i][length_index]) + ",\n" +
+                        "\t\"stdv\": " + str(self.events[i][stdv_index]) + "\n" +
+                        "\n}"
+                    )
+                else:
+                    print(
+                        "{\n" +
+                        "\t\"index\": " + str(i+1) + ",\n" +
+                        "\t\"signal\": " + str(self.events[i][signal_index]) + ",\n" +
+                        "\t\"time\": " + str(self.events[i][time_index]) + ",\n" +
+                        "\t\"model\": \"" + "".join( [ chr(item) for item in self.events[event_start][model_index] ]) + "\"" + ",\n" +
+                        "\t\"length\": " + str(self.events[i][length_index]) + ",\n" +
+                        "\t\"stdv\": " + str(self.events[i][stdv_index]) + "\n" +
+                        "\n},"
+                    )
+
     def get_csv_event_data(self,event_start = -1, event_end = -1):
 
         signal_index = self.get_mean_signal_index()
